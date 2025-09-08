@@ -9,10 +9,6 @@
 		},
 		"campaignSettings": {
 			"enableAccountsAsCM": true
-		},
-		"userManagementSettings": {
-			"enableEnhcUiUserAccessPolicies": true,
-			"userAccessPoliciesEnabled": true
 		}
 	}
 }

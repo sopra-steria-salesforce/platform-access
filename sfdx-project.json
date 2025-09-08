@@ -4,9 +4,7 @@
 			"package": "platform-access",
 			"versionNumber": "0.1.0.NEXT",
 			"path": "src",
-			"seedMetadata": {
-				"path": "pre_dependencies/standardValueSets"
-			},
+			"default": true,
 			"versionDescription": "Top level package for permission sets (groups), sharing rules, profiles, UAP etc. that span the entire platform and depend on multiple feature packages",
 			"dependencies": [
 				{
@@ -35,6 +33,10 @@
 				{
 					"package": "bids",
 					"versionNumber": "0.1.0.LATEST"
+				},
+				{
+					"package": "platform-ui",
+					"versionNumber": "0.1.0.LATEST"
 				}
 			]
 		}
@@ -52,6 +54,7 @@
 		"platform-base": "0HoP100000001CDKAY",
 		"document-transfer": "0HoP100000001FRKAY",
 		"bids": "0HoP100000001fFKAQ",
+		"platform-ui": "0HoP100000001P7KAI",
 		"platform-access": "0HoP100000001IfKAI"
 	}
 }

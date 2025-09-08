@@ -28,9 +28,7 @@
 			"pathAssistantEnabled": true
 		},
 		"userManagementSettings": {
-			"permsetsInFieldCreation": true,
-			"enableEnhcUiUserAccessPolicies": true,
-			"userAccessPoliciesEnabled": true
+			"permsetsInFieldCreation": true
 		},
 		"campaignSettings": {
 			"enableCampaignInfluence2": true
