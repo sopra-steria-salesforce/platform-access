@@ -1,49 +1,17 @@
 {
-	"default_config": "config/project-scratch-def.json",
-	"pre_dependencies": [],
-	"pre_deploy": [
+	"default_config": "config/project-scratch-def-snapshot.json",
+	"pre_dependencies": [
 		{
-			"type": "permissionSetLicense",
-			"value": "EmbeddedServiceMessagingUserPsl",
-			"continue_on_error": true
-		},
-		{
-			"type": "apex",
-			"value": "bin/apex/enableChatUser.apex",
-			"continue_on_error": true
+			"type": "metadata",
+			"value": "pre_dependencies"
 		}
 	],
+	"pre_deploy": [],
 	"post_deploy": [
 		{
-			"type": "apex",
-			"value": "bin/apex/addToGroup.apex",
-			"continue_on_error": true
-		},
-		{
-			"type": "js",
-			"value": "bin/js/manipulateMetadataBeforeDeploy.js"
-		},
-		{
 			"type": "metadata",
-			"value": "unpackaged"
-		},
-		{
-			"type": "permissionSet",
-			"value": "PermissionSetGroupDevName"
-		},
-		{
-			"type": "permissionSet",
-			"value": "PermissionSetDevName"
+			"value": "scratchOrgSetup"
 		}
 	],
-	"post_install": [
-		{
-			"type": "js",
-			"value": "bin/js/manipulateMetadataBeforeDeploy.js"
-		},
-		{
-			"type": "metadata",
-			"value": "unpackaged"
-		}
-	]
+	"post_install": []
 }
