@@ -5,6 +5,9 @@
 			"versionNumber": "0.1.0.NEXT",
 			"path": "src",
 			"default": true,
+			"seedMetadata": {
+				"path": "pre_dependencies/standardValueSets"
+			},
 			"versionDescription": "Top level package for permission sets (groups), sharing rules, profiles, UAP etc. that span the entire platform and depend on multiple feature packages",
 			"dependencies": [
 				{
