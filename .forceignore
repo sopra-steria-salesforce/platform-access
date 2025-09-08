@@ -16,3 +16,6 @@
 **/tsconfig*.json
 **/*.tsbuildinfo
 **/eslint.config.mjs
+
+# Temp ignore as Profiles are not in Repository
+src/useraccesspolicies/Give_Access_to_ServiceNow_Contract_Upsert.useraccesspolicy-meta.xml
