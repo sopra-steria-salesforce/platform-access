@@ -5,42 +5,24 @@
             "versionNumber": "0.2.0.NEXT",
             "path": "src",
             "default": true,
-            "seedMetadata": {
-                "path": "pre_dependencies/standardValueSets"
-            },
+            "seedMetadata": { "path": "pre_dependencies/standardValueSets" },
             "versionDescription": "Top level package for permission sets (groups), sharing rules, profiles, UAP etc. that span the entire platform and depend on multiple feature packages",
             "dependencies": [
-                {
-                    "package": "NebulaLogger@4.16.0.2"
-                },
-                {
-                    "package": "DashboardsGSP@2.9.0.1"
-                },
-                {
-                    "package": "Pardot@5.5.0.2"
-                },
-                {
-                    "package": "LightningMessagingUtility@1.5.0.1"
-                },
-                {
-                    "package": "trigger-actions-framework@0.3.2"
-                },
+                { "package": "NebulaLogger@4.16.0.2" },
+                { "package": "DashboardsGSP@2.9.0.1" },
+                { "package": "Pardot@5.5.0.2" },
+                { "package": "LightningMessagingUtility@1.5.0.1" },
+                { "package": "trigger-actions-framework@0.3.2" },
                 {
                     "package": "platform-base",
-                    "versionNumber": "1.10.0.LATEST"
+                    "versionNumber": "2.10.0.LATEST"
                 },
                 {
                     "package": "document-transfer",
-                    "versionNumber": "0.8.0.LATEST"
+                    "versionNumber": "0.10.0.LATEST"
                 },
-                {
-                    "package": "bids",
-                    "versionNumber": "0.1.0.LATEST"
-                },
-                {
-                    "package": "platform-ui",
-                    "versionNumber": "0.1.0.LATEST"
-                }
+                { "package": "bids", "versionNumber": "0.1.0.LATEST" },
+                { "package": "platform-ui", "versionNumber": "0.2.0.LATEST" }
             ]
         }
     ],
