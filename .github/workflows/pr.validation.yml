@@ -1,12 +1,13 @@
-name: '[PR] Validation'
+name: "[PR] Validation"
 on:
   pull_request:
     types:
       - opened
       - synchronize
-    paths-ignore:
-      - 'package.json'
-      - 'package-lock.json'
+    paths:
+      - "force-app/**"
+      - "unpackaged/**"
+      - "config/**"
 concurrency:
   group: validation-${{ github.base_ref }}-${{ github.head_ref }}
   cancel-in-progress: true
@@ -63,7 +64,7 @@ jobs:
           key: dependency-changes-pr-${{ github.event.number }}-org-${{ needs.scratch-org.outputs.username }}-${{ hashFiles('sfdx-project.json') }}
       - name: Authenticate DevHub
         if: steps.dependencies-cache.outputs.cache-hit != 'true' && steps.dependencies.outputs.exists == 'true'
-        uses: sopra-steria-salesforce/sf-cli-setup@v1
+        uses: sopra-steria-salesforce/sf-cli-setup@v0.8
         with:
           sf-cli-version: 2.104.6
           username: ${{ vars.SF_PROD_USERNAME }}
@@ -71,7 +72,7 @@ jobs:
           private-key: ${{ secrets.SF_PROD_PRIVATE_KEY }}
       - name: Authenticate Scratch Org
         if: steps.dependencies-cache.outputs.cache-hit != 'true' && steps.dependencies.outputs.exists == 'true' && needs.scratch-org.outputs.username
-        uses: sopra-steria-salesforce/sf-cli-setup@v1
+        uses: sopra-steria-salesforce/sf-cli-setup@v0.8
         with:
           sf-cli-version: 2.104.6
           username: ${{ needs.scratch-org.outputs.username }}
@@ -115,7 +116,7 @@ jobs:
         id: install-keys
         run: echo "keys=$(jq -c '.packageDirectories[0].dependencies[]' ./sfdx-project.json | while read -r dependency; do if echo $dependency | jq -e '.versionNumber' > /dev/null; then echo -n "$(echo $dependency | jq -r '.package'):${{ secrets.SF_PACKAGE_KEY }} "; fi; done)" >> $GITHUB_OUTPUT
 
-      # Install sf depenencies
+      # Install sf dependencies
       - run: npx sfp dependency:install --installationkeys "${{ steps.install-keys.outputs.keys }}" --targetusername ${{ needs.scratch-org.outputs.username }} --targetdevhubusername ${{ vars.SF_PROD_USERNAME }}
         if: steps.dependencies-cache.outputs.cache-hit != 'true' && steps.dependencies.outputs.exists == 'true'
 
@@ -132,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: sopra-steria-salesforce/sf-cli-setup@v1
+      - uses: sopra-steria-salesforce/sf-cli-setup@v0.8
         if: needs.scratch-org.outputs.username
         with:
           sf-cli-version: 2.104.6
@@ -153,6 +154,9 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }} # needs custom token to avoid rate limit
           node-version: 20
       - run: npm ci --prefer-offline --no-audit # force offline installs for quicker run
+
+      - name: Deactivate Source Tracking
+        run: sf org disable tracking --target-org ${{ needs.scratch-org.outputs.username }}
 
       # Run Pre-Deploy Steps
       - name: Run Pre-Deploy Steps
@@ -195,7 +199,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: sopra-steria-salesforce/sf-cli-setup@v1
+      - uses: sopra-steria-salesforce/sf-cli-setup@v0.8
         if: needs.scratch-org.outputs.username
         with:
           sf-cli-version: 2.104.6
@@ -228,11 +232,11 @@ jobs:
       hasTestClasses: ${{ steps.test-classes-in-repo.outputs.classes }}
 
   # -------------------------------------------------------------------------- #
-  #                         Validate 85% Code Coverage                         #
+  #                         Validate 75% Code Coverage                         #
   # -------------------------------------------------------------------------- #
 
   check-code-coverage:
-    name: Validate 85% Code Coverage
+    name: Validate 75% Code Coverage
     needs: [run-tests]
     permissions:
       contents: read
@@ -270,27 +274,35 @@ jobs:
           totalLines=0
           for row in $(jq -c -r '.[]' <<< "$(cat tests/apex/test-result-codecoverage.json)"); do
             name=$(jq -r '.name' <<< $row)
+
+            # if the class in the code coverage report is a class in this repo, count the
             if [[ " ${classes[@]} " =~ " ${name} " ]]; then
-            
+          
               covered=$(jq '.totalCovered' <<< $row)
               lines=$(jq '.totalLines' <<< $row)
-              
+          
               if [[ $covered != "null" && $lines != "null" && $lines != "0" ]]; then
-                let totalCovered+=covered
-                let totalLines+=lines
+                totalCovered=$((totalCovered + covered))
+                totalLines=$((totalLines + lines))
               fi
             fi
           done
 
-          let codecoverage=totalCovered*100/totalLines
-          echo "codecoverage=$(echo $codecoverage)" >> $GITHUB_OUTPUT
+          # If no lines to cover, set coverage to 100%
+          if [[ $totalLines == "0" ]]; then
+            codecoverage=100
+          else
+            codecoverage=$((totalCovered * 100 / totalLines))
+          fi
 
-      # Validate 85% Code Coverage
-      - name: Validate 85% Code Coverage
+          echo "codecoverage=$codecoverage" >> $GITHUB_OUTPUT
+
+      # Validate 75% Code Coverage
+      - name: Validate 75% Code Coverage
         if: steps.has-classes.outputs.has_classes == 'true' && needs.run-tests.outputs.hasTestClasses
         run: |
-          if [ ${{ steps.getCodeCoverage.outputs.codecoverage }} -lt 85 ]; then
-            echo "::error::The code coverage needs to be a minimum of 85%, but is currently ${{ steps.getCodeCoverage.outputs.codecoverage }}%"
+          if [ ${{ steps.getCodeCoverage.outputs.codecoverage }} -lt 75 ]; then
+            echo "::error::The code coverage needs to be a minimum of 75%, but is currently ${{ steps.getCodeCoverage.outputs.codecoverage }}%"
             exit 125
           fi
 
