@@ -22,7 +22,7 @@
                     "versionNumber": "0.12.0.LATEST"
                 },
                 { "package": "bids", "versionNumber": "0.1.0.LATEST" },
-                { "package": "platform-ui", "versionNumber": "0.3.0.LATEST" }
+                { "package": "platform-ui", "versionNumber": "0.4.0.LATEST" }
             ]
         }
     ],
